@@ -1,3 +1,19 @@
+// npm is an online repository of packages/registry for publishing and maintaining open-source node.js projects; npm is also a command line utility for interacting with those packages -> to get to the npm command line utility you must type npm init in the terminal; you must initialize npm like this every time you want to access the npm package repository
+
+// order of require statements are not important for functionality purposes, however, it is best practice to group by source: npm packages, personal modules, and core library modules often get grouped together
+const inquirer = require('inquirer');
+// inquirer's prompt method can receive an array of objects in its argument, known as the question object; properties of the question object identify the type, nmae, and question message of this particular question
+inquirer
+    .prompt([
+        {
+            // input was chosen because the answer will be a text reply
+            type: 'input',
+            name: 'name',
+            message: 'What is your name?'
+        }
+    ])
+    // answer object is returned as a promise
+    .then(answers => console.log(answers));
 // the require statement is a built-in function that's globally available in Node.js; allos the file to access the fs module's fucntions through the fs assignment; a module is a simple or complex js code organized in a single or in multiple js files that are reusable throughout your application
 // standard practice -> variable name = module name
 // 3 types of modules in node.js -> 1st = core modules (built-in to the node.js framework - file system module that allows you to manipulate, create and delete files on the server); 2nd = local modules (modules that YOU write); 3rd = 3rd party modules (the ones you get from the web)
@@ -21,9 +37,9 @@ const generatePage = require('./src/page-template');
 
 // const keyword, short for "constant" allows us to create variables that can't be reassigned a value
 // profileDataArgs holds the user command-line arguments
-const profileDataArgs = process.argv.slice(2, process.argv.length);
+        // const profileDataArgs = process.argv.slice(2, process.argv.length);
                     // console.log(profileDataArgs);
-const [name, github] = profileDataArgs;
+        // const [name, github] = profileDataArgs;
 
 // const printProfileData = profileDataArr => {
     // prints array of command-line arguments one by one
@@ -40,7 +56,7 @@ const [name, github] = profileDataArgs;
   
 //   printProfileData(profileDataArgs);
 
-
+const pageHTML = generatePage(name, github);
 
 // fs.writeFile() function definition has three arguments; the 1st argument, or paramter, is the name of the file that's being created; the 2nd argument is the data that will write onto the file (in this case the HTML template literal); the 3rd argument is a callback function that will be used for error handling
 
@@ -49,9 +65,9 @@ const [name, github] = profileDataArgs;
 // the 3rd argument = the callback function that will handel any errors as well as the success message
 
 // when an arrow function has one argument, parentheses are optional; when there are NO arguments - or more than one - parentheses are necessary
-fs.writeFile('./index.html', generatePage(name, github), err => {
+fs.writeFile('./index.html', pageHTML, err => {
     // a conditional statement checks for the err being returned by the callback function; if err exists, an error message is displayed; the statement creates an exception and stops the execution of the code
-    if (err) throw new Error(err);
+    if (err) throw err;
 
     console.log('Portfolio complete! Check out index.html to see the output!');
 });
