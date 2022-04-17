@@ -49,9 +49,24 @@ const promptUser = () => {
             }
         },
         {
+            type: 'confirm',
+            name: 'confirmAbout',
+            message: 'Would you like to enter some information about yourself for an "About" section?',
+            default: true
+        },
+        {
             type: 'input',
             name: 'about',
             message: 'Provide some information about yourself: (Required)',
+            // similar to validate method, but instead of passing the value entered for that specific question in as the parameter, it passes an object of all of the answers given so far as an object
+            // the inquirer method automatically passes an object containing the user's answers to the when function ({"name": "denysha", "github": "denysha-abigail", "confirmAbout": true}); this allows us to write conditional code based on the answers the user has supplied thus far; when the when function gets this object
+            when: ({ confirmAbout }) => {
+                if (confirmAbout) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
         }
     ]);
 };
@@ -108,7 +123,7 @@ const promptProject = portfolioData => {
                 if (linkInput) {
                     return true;
                 } else {
-                    console.log('Please provide a link to your deployed project');
+                    console.log('Please provide a link to your deployed project!');
                     return false;
                 }
             }
