@@ -8,11 +8,11 @@ const inquirer = require('inquirer');
 // standard practice -> variable name = module name
 // 3 types of modules in node.js -> 1st = core modules (built-in to the node.js framework - file system module that allows you to manipulate, create and delete files on the server); 2nd = local modules (modules that YOU write); 3rd = 3rd party modules (the ones you get from the web)
 
-            // const fs = require('fs');
+const fs = require('fs');
 
 // the variable name is arbitrary (random), but the relative path to include the file must be exact
 
-            // const generatePage = require('./src/page-template');
+const generatePage = require('./src/page-template');
 
 // inquirer's prompt method can receive an array of objects in its argument, known as the question object; properties of the question object identify the type, nmae, and question message of this particular question
 
@@ -158,7 +158,15 @@ const promptProject = portfolioData => {
 
 promptUser()
     .then(promptProject)
-    .then(portfolioData => console.log(portfolioData));
+    .then(portfolioData => {
+        const pageHTML = generatePage(portfolioData);
+
+        fs.writeFile('./index.html', pageHTML, err => {
+          if (err) throw new Error(err);
+
+          console.log('Page created! Check out index.html in this directory to see it!');
+        });
+  });
 
 // process is a global object (much like document or window in the browser)
 // var commandLineArgs = process.argv;
