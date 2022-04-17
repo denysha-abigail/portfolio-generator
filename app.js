@@ -22,17 +22,36 @@ const promptUser = () => {
             // input was chosen because the answer will be a text reply
             type: 'input',
             name: 'name',
-            message: 'What is your name?'
+            message: 'What is your name? (Required)',
+            // validate method receives an argument; in this case, nameInput
+            validate: nameInput => {
+                if (nameInput) {
+                    // if condition evaluates to true, the validation has passed successfully
+                    return true;
+                } else {
+                    console.log('Please enter your name!');
+                    // if condition evaluates to false, the validation fails and the user receives a message, prompting them with the same question until an answer is received
+                    return false;
+                }
+            }
         },
         {
             type: 'input',
             name: 'github',
-            message: 'Enter your Github Username'
+            message: 'Enter your GitHub Username. (Required)',
+            validate: githubInput => {
+                if (githubInput) {
+                    return true;
+                } else {
+                    console.log('Please enter your GitHub Username!');
+                    return false;
+                }
+            }
         },
         {
             type: 'input',
             name: 'about',
-            message: 'Provide some information about yourself:'
+            message: 'Provide some information about yourself: (Required)',
         }
     ]);
 };
@@ -51,12 +70,28 @@ const promptProject = portfolioData => {
         {
             type: 'input',
             name: 'name',
-            message: 'What is the name of your project?'
+            message: 'What is the name of your project? (Required)',
+            validate: projectNameInput => {
+                if (projectNameInput) {
+                    return true;
+                } else {
+                    console.log('Please enter the name of your project!');
+                    return false;
+                }
+            }
         },
         {
             type: 'input',
             name: 'description',
-            message: 'Provide a description of the project (Required)'
+            message: 'Provide a description of the project (Required)',
+            validate: descriptionInput => {
+                if (descriptionInput) {
+                    return true;
+                } else {
+                    console.log('Please provide a description of your project!');
+                    return false;
+                }
+            }
         },
         {
             // gives the user options a list of answers to choose that allos none or all selections as valid entries; also contains the choices property, which has a list of possible answers in an array
@@ -68,7 +103,15 @@ const promptProject = portfolioData => {
         {
             type: 'input',
             name: 'link',
-            message: 'Enter the Github link to your project. (Required)'
+            message: 'Enter the Github link to your project. (Required)',
+            validate: linkInput => {
+                if (linkInput) {
+                    return true;
+                } else {
+                    console.log('Please provide a link to your deployed project');
+                    return false;
+                }
+            }
         },
         {
             // Boolean that can receive a yes or no (true or false) answer; 
