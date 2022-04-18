@@ -8,8 +8,8 @@ const inquirer = require('inquirer');
 // standard practice -> variable name = module name
 // 3 types of modules in node.js -> 1st = core modules (built-in to the node.js framework - file system module that allows you to manipulate, create and delete files on the server); 2nd = local modules (modules that YOU write); 3rd = 3rd party modules (the ones you get from the web)
 
-const fs = require('fs');
-
+// because we exported an object from generate-site.js, we can use object destructuring to create variables out of those properties instead of having to use dot notation
+const { writeFile, copyFile } = require('./utils/generate-site.js');
 // the variable name is arbitrary (random), but the relative path to include the file must be exact
 
 const generatePage = require('./src/page-template');
@@ -118,12 +118,12 @@ const promptProject = portfolioData => {
         {
             type: 'input',
             name: 'link',
-            message: 'Enter the Github link to your project. (Required)',
+            message: 'Enter the GitHub link to your project. (Required)',
             validate: linkInput => {
                 if (linkInput) {
                     return true;
                 } else {
-                    console.log('Please provide a link to your deployed project!');
+                    console.log('Please provide a link to your GitHub project repo!');
                     return false;
                 }
             }
@@ -156,17 +156,54 @@ const promptProject = portfolioData => {
         });
 }
 
+            // promptUser()
+            //     .then(promptProject)
+            //     .then(portfolioData => {
+            //         const pageHTML = generatePage(portfolioData);
+
+            //         fs.writeFile('./dist/index.html', pageHTML, err => {
+            //         if (err) {
+            //             console.log(err);
+            //             return;
+            //         };
+            //         console.log('Page created! Check out index.html in this directory to see it!');
+
+            //         fs.copyFile('./src/style.css', './dist/style.css', err => {
+            //             if (err) {
+            //                 console.log(err);
+            //                 return;
+            //             }
+            //             console.log('Style sheet copied successfully!');
+            //         })
+            //     });
+            // });
+
+// a Promise chain is a series of Promise-based functinos that run in order; instead of having each Promise return to its own .then() method, we can return the function within a .then()'s function and chain another .then() method onto it
+
+// start by asking user for their information with inquirer prompts; this returns all of the data as an object in a promise
 promptUser()
-    .then(promptProject)
-    .then(portfolioData => {
-        const pageHTML = generatePage(portfolioData);
-
-        fs.writeFile('./index.html', pageHTML, err => {
-          if (err) throw new Error(err);
-
-          console.log('Page created! Check out index.html in this directory to see it!');
-        });
-  });
+// the promptProject() function captures the returning data from promptUser() and we recursively call promptProject() for as many projects as the user wants to add; each project is pushed into a projects array and when we're done, the final set of data is returned to the next .then()
+.then(promptProject)
+// the finished portfolio data object is returned as portfolioData and sent into the generatePage() function, which will return the finished HTML template code into pageHTML
+.then(portfolioData => {
+    return generatePage(portfolioData);
+})
+// we pass pageHTML into the newly created writeFile() function, which returns a Promise; we use return here so the Promise is returned into the next .then() method
+.then(pageHTML => {
+    return writeFile(pageHTML);
+})
+// upon successful file creation, we take the writeFileResponse object provided by the writeFile() function's resolve execution to log it, and then we return copyFile()
+.then(writeFileResponse => {
+    console.log(writeFileResponse);
+    return copyFile();
+})
+// the Promise returned by copyFile() then let's us know if the CSS file was copied correctly, and if so, we're all done!
+.then(copyFileResponse => {
+    console.log(copyFileResponse);
+})
+.catch(err => {
+    console.log(err);
+});
 
 // process is a global object (much like document or window in the browser)
 // var commandLineArgs = process.argv;
